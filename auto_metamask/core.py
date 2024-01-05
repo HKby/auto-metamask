@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 file_path = os.getcwd()
 log_format = "%(asctime)s %(levelname)s %(message)s"
 date_format = "%m-%d-%Y %H:%M:%S"
-logging.basicConfig(filename=file_path+"/auto-metamask.log", level=logging.INFO,
+logging.basicConfig(filename=file_path + "/auto-metamask.log", level=logging.INFO,
                     format=log_format, datefmt=date_format)
 
 
@@ -140,6 +140,7 @@ def switchPage(func):
             logging.warning("No popover")
 
         driver.switch_to.window(current_handle)
+
     return switch
 
 
@@ -275,7 +276,8 @@ def addNetwork(network_name, rpc_url, chain_id, currency_symbol):
     inputs[3].send_keys(currency_symbol)
 
     wait.until(EC.element_to_be_clickable(
-        (By.XPATH, "//div[contains(@class, 'networks-tab__add-network-form-footer')]//button[contains(@class, 'btn-primary')]"))).click()
+        (By.XPATH,
+         "//div[contains(@class, 'networks-tab__add-network-form-footer')]//button[contains(@class, 'btn-primary')]"))).click()
 
     try:
         wait.until(EC.element_to_be_clickable(
@@ -300,8 +302,6 @@ def changeNetwork(network_name):
     # display the network list
     wait.until(EC.element_to_be_clickable(
         (By.CSS_SELECTOR, "button[data-testid='network-display']"))).click()
-
-
 
     try:
         wait.until(EC.element_to_be_clickable(
@@ -338,7 +338,8 @@ def importPK(priv_key):
         (By.CSS_SELECTOR, "button[data-testid='account-menu-icon']"))).click()
     # Click the import account button
     wait.until(EC.element_to_be_clickable(
-        (By.XPATH, "(//section[contains(@class, 'multichain-account-menu-popover')]//button[contains(@class, 'mm-button-base--size-sm')])[2]"))).click()
+        (By.XPATH,
+         "(//section[contains(@class, 'multichain-account-menu-popover')]//button[contains(@class, 'mm-button-base--size-sm')])[2]"))).click()
 
     key_input = wait.until(EC.visibility_of_element_located(
         (By.CSS_SELECTOR, '#private-key-box')))
@@ -391,7 +392,7 @@ def approve():
 
     wait.until(EC.element_to_be_clickable(
         (By.XPATH, "//button[contains(@class, 'btn-primary')]"))).click()
-    
+
     wait.until(EC.element_to_be_clickable(
         (By.XPATH, "//button[contains(@class, 'btn-primary')]"))).click()
 
@@ -416,7 +417,7 @@ def approveTokens(cap=None):
 
     try:
         wait_fast.until(EC.element_to_be_clickable(
-        (By.XPATH, "//button[text()='Use default']")))
+            (By.XPATH, "//button[text()='Use default']")))
     except Exception:
         logging.warning('Refresh page')
         driver.refresh()
@@ -431,10 +432,10 @@ def approveTokens(cap=None):
     else:
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, "//button[text()='Use default']"))).click()
-    
+
     wait.until(EC.element_to_be_clickable(
         (By.CSS_SELECTOR, "button[data-testid='page-container-footer-next']"))).click()
-    
+
     wait.until(EC.element_to_be_clickable(
         (By.CSS_SELECTOR, "button[data-testid='page-container-footer-next']"))).click()
 
@@ -464,7 +465,7 @@ def confirm():
         driver.refresh()
 
     wait.until(EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, "button[data-testid='page-container-footer-next']"))).click()
+        (By.CSS_SELECTOR, "button[data-testid='page-container-footer-next']"))).click()
 
     try:
         wait.until(EC.element_to_be_clickable(
@@ -500,3 +501,24 @@ def waitPending(timeout=40):
         return
 
     logging.info('Wait pending successfully')
+
+
+# adding disconnect the connected sites (one site)
+@switchPage
+def disconnect():
+    """
+    Disconnect wallet from given sites after transaction done.
+    :return:
+    """
+    try:
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//button[@data-testid='account-options-menu-button']"))).click()
+        wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "button[data-testid='global-menu-connected-sites'"))).click()
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '//*[@id="popover-content"]/div/div/section/div[2]/main/div/a'))).click()
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//button[contains(text(),'Disconnect')]"))).click()
+        logging.info('Disconnect successfully')
+    except Exception:
+        logging.error("Disconnect failed")

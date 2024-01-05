@@ -64,5 +64,8 @@ if __name__ == '__main__':
     approveTokens(6)
     waitPending(20)
 
+    # disconnect the certain website
+
+
     time.sleep(60)
     driver.quit()
